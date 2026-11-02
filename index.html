@@ -1,0 +1,1919 @@
+html
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Moshi Moshi Takoyaki - Self Ordering</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts matching poster comic/bubbly typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Luckiest+Guy&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <style>
+        :root {
+            --tako-red: #E31212;
+            --tako-dark-red: #990000;
+            --tako-orange: #FF5500;
+            --tako-yellow: #FFD600;
+            --tako-cream: #FFF6C5;
+            --tako-brown: #2D080A;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #B80909;
+            color: var(--tako-brown);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Sunburst Comic Background matching poster */
+        .sunburst-bg {
+            background: 
+                radial-gradient(circle at 50% 18%, rgba(255, 220, 0, 0.45) 0%, rgba(255, 85, 0, 0.2) 45%, rgba(160, 0, 0, 0.85) 100%),
+                repeating-conic-gradient(
+                    from 0deg at 50% 18%,
+                    #E31212 0deg 7.5deg,
+                    #FF4D00 7.5deg 15deg
+                );
+            background-attachment: fixed;
+        }
+
+        /* Halftone Dot Overlay */
+        .halftone-overlay {
+            background-image: radial-gradient(rgba(255, 215, 0, 0.16) 1.5px, transparent 1.5px);
+            background-size: 14px 14px;
+        }
+
+        /* Poster Fonts */
+        .font-poster {
+            font-family: 'Luckiest Guy', cursive;
+            letter-spacing: 0.04em;
+        }
+
+        .font-bubbly {
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        /* 3D Glossy Red Text like "TAKOYAKI" in Poster */
+        .title-3d-red {
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            color: #FF1E1E;
+            -webkit-text-stroke: 3px #3A0507;
+            paint-order: stroke fill;
+            text-shadow: 
+                0px 4px 0px #3A0507,
+                0px 7px 14px rgba(0,0,0,0.45);
+            letter-spacing: 0.03em;
+        }
+
+        /* Japanese Subtitle Style */
+        .jp-badge {
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            color: #FFE600;
+            -webkit-text-stroke: 2.5px #2D080A;
+            paint-order: stroke fill;
+            text-shadow: 0px 3px 0px #2D080A;
+        }
+
+        /* Glossy Price Number Style */
+        .price-3d {
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            color: #FF1A1A;
+            -webkit-text-stroke: 2.5px #2D080A;
+            paint-order: stroke fill;
+            text-shadow: 0 3px 0 #2D080A;
+        }
+
+        /* Cream Poster Card with Yellow & Red Border */
+        .poster-card {
+            background: linear-gradient(180deg, #FFFCE6 0%, #FFF2B2 100%);
+            border: 3.5px solid #FFD000;
+            box-shadow: 
+                0 0 0 3px #C90E0E,
+                0 10px 25px -5px rgba(45, 8, 10, 0.5);
+            border-radius: 1.25rem;
+        }
+
+        /* Dark Espresso Brush Banner */
+        .brush-badge {
+            background: #2D080A;
+            color: #FFFFFF;
+            border: 2px solid #FFE600;
+            box-shadow: 0 4px 0 #FF9900;
+            border-radius: 999px 180px 999px 180px;
+        }
+
+        /* Custom Glossy Game/Poster Buttons */
+        .btn-tako-primary {
+            background: linear-gradient(180deg, #FF3B1F 0%, #C80808 100%);
+            border: 3px solid #FFE600;
+            color: #FFFFFF;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            box-shadow: 0 5px 0 #2D080A, 0 8px 15px rgba(0,0,0,0.35);
+            transition: all 0.15s ease;
+        }
+        .btn-tako-primary:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.06);
+        }
+        .btn-tako-primary:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #2D080A;
+        }
+
+        .btn-tako-yellow {
+            background: linear-gradient(180deg, #FFE838 0%, #FFA800 100%);
+            border: 3px solid #2D080A;
+            color: #2D080A;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            box-shadow: 0 5px 0 #2D080A, 0 8px 15px rgba(0,0,0,0.3);
+            transition: all 0.15s ease;
+        }
+        .btn-tako-yellow:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #2D080A;
+        }
+
+        /* Selection Card Active State */
+        .option-card {
+            transition: all 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 3px solid #E5C158;
+            background: #FFFDF0;
+        }
+        .option-card.selected {
+            border-color: #D90416;
+            background: linear-gradient(180deg, #FFF3B0 0%, #FFE066 100%);
+            box-shadow: 0 0 0 3px #2D080A, 0 6px 12px rgba(217, 4, 22, 0.35);
+            transform: scale(1.02);
+        }
+
+        /* Animations */
+        @keyframes floatMascot {
+            0%, 100% { transform: translateY(0px) rotate(-2deg); }
+            50% { transform: translateY(-6px) rotate(3deg); }
+        }
+        .mascot-float {
+            animation: floatMascot 3s ease-in-out infinite;
+        }
+        .mascot-float-delayed {
+            animation: floatMascot 3.2s ease-in-out 1.2s infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255, 214, 0, 0.7), 0 6px 0 #2D080A; }
+            50% { box-shadow: 0 0 0 12px rgba(255, 214, 0, 0), 0 6px 0 #2D080A; }
+        }
+        .pulse-ready {
+            animation: pulseGlow 1.8s infinite;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FFF6C5;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D90416;
+            border-radius: 9999px;
+        }
+    </style>
+</head>
+<body class="sunburst-bg halftone-overlay pb-28 select-none">
+
+    <!-- TOP STATUS BAR (FIREBASE REALTIME DB CONNECTION & STAFF DEMO SWITCH) -->
+    <div class="bg-[#2D080A] text-amber-100 text-xs py-1.5 px-3 border-b-2 border-[#FFD000] sticky top-0 z-50">
+        <div class="max-w-lg mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-1.5">
+                <span id="dbStatusDot" class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
+                <span id="dbStatusText" class="font-semibold tracking-wide">Menyambung ke moshitako001...</span>
+            </div>
+            <button onclick="toggleKitchenSimulator()" class="bg-[#4A1215] hover:bg-[#68181D] text-[#FFD000] border border-[#FFD000]/50 px-2.5 py-0.5 rounded-full font-bold flex items-center gap-1 transition">
+                <i class="ph-fill ph-cooking-pot"></i>
+                <span>Panel Dapur (Uji Queue)</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN APP CONTAINER -->
+    <div class="max-w-lg mx-auto px-3 pt-3">
+
+        <!-- BRAND POSTER HEADER -->
+        <header class="relative text-center mb-4">
+            <!-- Japanese Title -->
+            <div class="inline-block bg-[#2D080A] px-4 py-0.5 rounded-full border-2 border-[#FFD000] shadow-md mb-1">
+                <span class="jp-badge text-xl sm:text-2xl tracking-widest">たこ焼き</span>
+            </div>
+
+            <!-- Main 3D Title + Cute Mascots -->
+            <div class="relative flex items-center justify-center py-1">
+                <!-- Left Mascot (Hachimaki Octopus with Takoyaki Pick) -->
+                <div class="w-16 h-16 sm:w-20 sm:h-20 mascot-float flex-shrink-0 -mr-2 z-10">
+                    <svg viewBox="0 0 120 120" class="w-full h-full drop-shadow-lg">
+                        <!-- Skewer stick & takoyaki ball -->
+                        <line x1="92" y1="15" x2="78" y2="58" stroke="#D9A05B" stroke-width="4" stroke-linecap="round"/>
+                        <circle cx="94" cy="18" r="14" fill="#D97724" stroke="#2D080A" stroke-width="3.5"/>
+                        <path d="M83 14 Q94 8 105 15 Q99 24 85 20 Z" fill="#591C0B"/>
+                        <path d="M86 15 L102 15 M88 19 L100 18" stroke="#FFF8D6" stroke-width="2" stroke-linecap="round"/>
+                        <!-- Tentacles -->
+                        <path d="M25 85 Q12 95 22 105 Q32 108 38 92" fill="#E31212" stroke="#2D080A" stroke-width="4" stroke-linecap="round"/>
+                        <path d="M42 90 Q38 108 48 110 Q58 110 56 92" fill="#E31212" stroke="#2D080A" stroke-width="4" stroke-linecap="round"/>
+                        <path d="M64 90 Q66 108 76 108 Q85 105 78 88" fill="#E31212" stroke="#2D080A" stroke-width="4" stroke-linecap="round"/>
+                        <path d="M78 82 Q96 92 98 80 Q98 68 82 70" fill="#E31212" stroke="#2D080A" stroke-width="4" stroke-linecap="round"/>
+                        <!-- Head -->
+                        <ellipse cx="55" cy="62" rx="34" ry="30" fill="#FF1E1E" stroke="#2D080A" stroke-width="4"/>
+                        <!-- Gloss highlight -->
+                        <ellipse cx="38" cy="48" rx="8" ry="4" transform="rotate(-25 38 48)" fill="#FF8A8A" opacity="0.7"/>
+                        <!-- Headband (Hachimaki) -->
+                        <path d="M22 52 Q55 40 88 52 L89 60 Q55 49 21 60 Z" fill="#FFFFFF" stroke="#2D080A" stroke-width="3.5"/>
+                        <path d="M35 49 L45 56 M55 46 L65 54 M73 48 L81 56" stroke="#E31212" stroke-width="3.5"/>
+                        <!-- Knot on left -->
+                        <circle cx="19" cy="56" r="6" fill="#FFFFFF" stroke="#2D080A" stroke-width="3"/>
+                        <!-- Eyes (Wink + Big Cute Eye) -->
+                        <path d="M35 68 Q41 62 47 68" fill="none" stroke="#2D080A" stroke-width="4" stroke-linecap="round"/>
+                        <circle cx="68" cy="68" r="6.5" fill="#2D080A"/>
+                        <circle cx="70" cy="65.5" r="2.5" fill="#FFFFFF"/>
+                        <!-- Happy Mouth -->
+                        <path d="M48 74 Q55 86 62 74 Z" fill="#7A0000" stroke="#2D080A" stroke-width="3"/>
+                        <path d="M51 79 Q55 76 59 79" fill="#FF6B6B"/>
+                    </svg>
+                </div>
+
+                <!-- Center Headline -->
+                <div class="z-20 px-1">
+                    <h1 class="title-3d-red text-5xl sm:text-6xl tracking-tight leading-none select-none">
+                        TAKOYAKI
+                    </h1>
+                    <!-- Ribbon Sub-banner -->
+                    <div class="mt-1 inline-block bg-[#2D080A] text-white font-bubbly font-bold text-xs sm:text-sm px-4 py-1 rounded-full border-2 border-[#FFD000] shadow-md tracking-wider uppercase">
+                        🔥 TAKOYAKI PANAS, HATI PUAS 🔥
+                    </div>
+                </div>
+
+                <!-- Right Mascot (Chef Hat Octopus) -->
+                <div class="w-16 h-16 sm:w-20 sm:h-20 mascot-float-delayed flex-shrink-0 -ml-2 z-10">
+                    <svg viewBox="0 0 120 120" class="w-full h-full drop-shadow-lg">
+                        <!-- Chef Hat -->
+                        <path d="M40 34 Q30 16 48 16 Q58 8 72 16 Q88 18 78 34 Z" fill="#FFFFFF" stroke="#2D080A" stroke-width="3.5"/>
+                        <!-- Tentacles -->
+                        <path d="M22 80 Q10 90 18 100 Q28 102 36 88" fill="#E31212" stroke="#2D080A" stroke-width="4" stroke-linecap="round"/>
+                        <path d="M40 90 Q36 108 46 110 Q56 110 54 92" fill="#E31212" stroke="#2D080A" stroke-width="4" stroke-linecap="round"/>
+                        <path d="M62 90 Q64 108 74 108 Q84 105 76 88" fill="#E31212" stroke="#2D080A" stroke-width="4" stroke-linecap="round"/>
+                        <path d="M78 85 Q92 98 98 88 Q102 78 84 74" fill="#E31212" stroke="#2D080A" stroke-width="4" stroke-linecap="round"/>
+                        <!-- Head -->
+                        <ellipse cx="58" cy="64" rx="33" ry="29" fill="#FF1E1E" stroke="#2D080A" stroke-width="4"/>
+                        <!-- Headband -->
+                        <path d="M26 52 Q58 41 90 52 L91 60 Q58 49 25 60 Z" fill="#FFFFFF" stroke="#2D080A" stroke-width="3.5"/>
+                        <path d="M38 49 L48 56 M58 46 L68 54 M75 49 L83 56" stroke="#E31212" stroke-width="3.5"/>
+                        <!-- Cute Big Eyes -->
+                        <circle cx="44" cy="68" r="6.5" fill="#2D080A"/>
+                        <circle cx="42" cy="65.5" r="2.5" fill="#FFFFFF"/>
+                        <circle cx="72" cy="68" r="6.5" fill="#2D080A"/>
+                        <circle cx="70" cy="65.5" r="2.5" fill="#FFFFFF"/>
+                        <!-- Rosy Cheeks -->
+                        <ellipse cx="34" cy="73" rx="4.5" ry="2.5" fill="#FF8585"/>
+                        <ellipse cx="82" cy="73" rx="4.5" ry="2.5" fill="#FF8585"/>
+                        <!-- Open Smile -->
+                        <path d="M51 74 Q58 86 65 74 Z" fill="#7A0000" stroke="#2D080A" stroke-width="3"/>
+                    </svg>
+                </div>
+            </div>
+        </header>
+
+        <!-- 5-SCREEN STEPPER PROGRESS BAR -->
+        <nav aria-label="Progress" class="mb-4">
+            <div class="bg-[#2D080A]/90 border-2 border-[#FFD000] rounded-2xl p-2 shadow-lg">
+                <div class="grid grid-cols-5 gap-1 text-center">
+                    <button onclick="tryNavigateStep(1)" id="stepBtn1" class="step-indicator flex flex-col items-center py-1.5 px-1 rounded-xl transition">
+                        <span class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-extrabold border-2 mb-0.5"><i class="ph-fill ph-bowl-food text-sm"></i></span>
+                        <span class="text-[10px] font-bold leading-tight">1. Menu</span>
+                    </button>
+                    <button onclick="tryNavigateStep(2)" id="stepBtn2" class="step-indicator flex flex-col items-center py-1.5 px-1 rounded-xl transition">
+                        <span class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-extrabold border-2 mb-0.5"><i class="ph-fill ph-shopping-cart text-sm"></i></span>
+                        <span class="text-[10px] font-bold leading-tight">2. Semak</span>
+                    </button>
+                    <button onclick="tryNavigateStep(3)" id="stepBtn3" class="step-indicator flex flex-col items-center py-1.5 px-1 rounded-xl transition">
+                        <span class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-extrabold border-2 mb-0.5"><i class="ph-fill ph-qr-code text-sm"></i></span>
+                        <span class="text-[10px] font-bold leading-tight">3. Bayar</span>
+                    </button>
+                    <button onclick="tryNavigateStep(4)" id="stepBtn4" class="step-indicator flex flex-col items-center py-1.5 px-1 rounded-xl transition">
+                        <span class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-extrabold border-2 mb-0.5"><i class="ph-fill ph-timer text-sm"></i></span>
+                        <span class="text-[10px] font-bold leading-tight">4. Giliran</span>
+                    </button>
+                    <button onclick="tryNavigateStep(5)" id="stepBtn5" class="step-indicator flex flex-col items-center py-1.5 px-1 rounded-xl transition">
+                        <span class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-extrabold border-2 mb-0.5"><i class="ph-fill ph-bell-ringing text-sm"></i></span>
+                        <span class="text-[10px] font-bold leading-tight">5. Ambil</span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- ========================================================= -->
+        <!-- SCREEN 1: MENU (PILIH SET, ORI/SPICY, INTI/MIX, ADD CART) -->
+        <!-- ========================================================= -->
+        <section id="screen1" class="space-y-4">
+            
+            <!-- TAKOYAKI HERO DISPLAY CARD (PAPARAN GAMBAR TAKOYAKI) -->
+            <div class="poster-card p-3.5 relative overflow-hidden">
+                <div class="flex flex-col sm:flex-row items-center gap-3">
+                    <!-- Detailed SVG Illustration of Wooden Boat Takoyaki matching the poster -->
+                    <div class="w-48 h-32 sm:w-52 sm:h-36 flex-shrink-0 relative">
+                        <svg viewBox="0 0 320 210" class="w-full h-full drop-shadow-md">
+                            <!-- Glow behind boat -->
+                            <ellipse cx="160" cy="120" rx="135" ry="65" fill="#FFD000" opacity="0.35"/>
+                            <!-- Back of Wooden Boat (Fune) -->
+                            <path d="M18 115 L70 80 L250 80 L302 115 Z" fill="#D79952" stroke="#2D080A" stroke-width="4"/>
+                            <!-- Takoyaki Balls Row (Back) -->
+                            <circle cx="95" cy="95" r="32" fill="#E0822B" stroke="#2D080A" stroke-width="3.5"/>
+                            <circle cx="155" cy="90" r="33" fill="#E0822B" stroke="#2D080A" stroke-width="3.5"/>
+                            <circle cx="215" cy="96" r="32" fill="#E0822B" stroke="#2D080A" stroke-width="3.5"/>
+                            <!-- Takoyaki Balls Row (Front) -->
+                            <circle cx="72" cy="118" r="34" fill="#EA8C31" stroke="#2D080A" stroke-width="3.5"/>
+                            <circle cx="132" cy="122" r="36" fill="#EA8C31" stroke="#2D080A" stroke-width="3.5"/>
+                            <circle cx="195" cy="120" r="35" fill="#EA8C31" stroke="#2D080A" stroke-width="3.5"/>
+                            <circle cx="248" cy="115" r="32" fill="#EA8C31" stroke="#2D080A" stroke-width="3.5"/>
+                            
+                            <!-- Dark Savory Takoyaki Sauce Caps -->
+                            <path d="M44 110 Q72 82 100 110 Q85 128 55 122 Z" fill="#4A1208"/>
+                            <path d="M100 115 Q132 82 164 115 Q150 132 110 128 Z" fill="#4A1208"/>
+                            <path d="M165 112 Q195 82 225 112 Q212 130 175 126 Z" fill="#4A1208"/>
+                            <path d="M222 108 Q248 82 274 108 Q260 124 230 120 Z" fill="#4A1208"/>
+
+                            <!-- Cut-open center Takoyaki showing juicy Octopus/Prawn Inti inside -->
+                            <ellipse cx="132" cy="130" rx="18" ry="15" fill="#FFF3C4" stroke="#7A2E0E" stroke-width="2.5"/>
+                            <circle cx="132" cy="130" r="10" fill="#FF6B8B" stroke="#C81E45" stroke-width="2"/>
+                            <circle cx="129" cy="127" r="2.5" fill="#FFFFFF"/>
+                            <circle cx="136" cy="133" r="2.5" fill="#FFFFFF"/>
+
+                            <!-- Japanese Mayo Drizzle Lines -->
+                            <path d="M52 105 Q75 95 95 108 M56 113 Q80 103 98 114" fill="none" stroke="#FFFDF2" stroke-width="3" stroke-linecap="round"/>
+                            <path d="M105 104 Q135 92 158 106 M110 112 Q138 102 160 113" fill="none" stroke="#FFFDF2" stroke-width="3.2" stroke-linecap="round"/>
+                            <path d="M170 105 Q195 94 220 107 M175 113 Q200 102 222 114" fill="none" stroke="#FFFDF2" stroke-width="3" stroke-linecap="round"/>
+                            <path d="M228 102 Q248 93 268 105" fill="none" stroke="#FFFDF2" stroke-width="3" stroke-linecap="round"/>
+
+                            <!-- Bonito Flakes (Katsuobushi) & Green Aonori Flakes -->
+                            <path d="M85 78 Q98 68 108 79 Q96 86 85 78 Z" fill="#F4C28C" stroke="#8C4A19" stroke-width="1.5"/>
+                            <path d="M135 72 Q150 60 162 74 Q148 82 135 72 Z" fill="#F7CFA0" stroke="#8C4A19" stroke-width="1.5"/>
+                            <path d="M178 76 Q192 65 204 78 Q190 86 178 76 Z" fill="#F4C28C" stroke="#8C4A19" stroke-width="1.5"/>
+                            <path d="M115 84 Q128 74 138 86 Z" fill="#E8A96B" stroke="#8C4A19" stroke-width="1.5"/>
+                            <!-- Green Spring Onion / Seaweed Dots -->
+                            <circle cx="92" cy="90" r="3" fill="#2EAE34"/>
+                            <circle cx="118" cy="95" r="3.5" fill="#2EAE34"/>
+                            <circle cx="145" cy="88" r="3" fill="#2EAE34"/>
+                            <circle cx="165" cy="96" r="3.5" fill="#2EAE34"/>
+                            <circle cx="192" cy="90" r="3" fill="#2EAE34"/>
+                            <circle cx="215" cy="95" r="3" fill="#2EAE34"/>
+
+                            <!-- Front of Wooden Boat (Fune) -->
+                            <path d="M18 115 L58 172 L262 172 L302 115 Q160 148 18 115 Z" fill="#F3B873" stroke="#2D080A" stroke-width="4" stroke-linejoin="round"/>
+                            <path d="M45 148 L275 148" stroke="#D79952" stroke-width="2.5" opacity="0.6"/>
+                        </svg>
+                    </div>
+
+                    <!-- Poster Price Reference Mini-Board -->
+                    <div class="flex-1 w-full">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <span class="bg-[#D90416] text-white font-bubbly font-bold text-xs px-2.5 py-0.5 rounded-full border border-[#2D080A]">
+                                JADUAL HARGA RASMI
+                            </span>
+                            <span class="text-[11px] font-bold text-[#7A1C1C]">Klik set di bawah untuk pesan</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                            <!-- Original Column -->
+                            <div class="bg-[#FFFDF2] border-2 border-[#2D080A] rounded-xl p-2 shadow-sm">
+                                <div class="font-bubbly font-bold text-center text-[#D90416] border-b border-amber-300 pb-1 mb-1">
+                                    ORIGINAL 🐙
+                                </div>
+                                <div class="flex justify-between font-bold py-0.5"><span>5 Biji</span><span class="text-[#D90416]">RM 5</span></div>
+                                <div class="flex justify-between font-bold py-0.5"><span>10 Biji</span><span class="text-[#D90416]">RM 10</span></div>
+                                <div class="flex justify-between font-bold py-0.5"><span>25 Biji</span><span class="text-[#D90416]">RM 23</span></div>
+                            </div>
+                            <!-- Spicy Column -->
+                            <div class="bg-[#FFFDF2] border-2 border-[#2D080A] rounded-xl p-2 shadow-sm">
+                                <div class="font-bubbly font-bold text-center text-[#D90416] border-b border-amber-300 pb-1 mb-1">
+                                    SPICY 🌶️
+                                </div>
+                                <div class="flex justify-between font-bold py-0.5"><span>5 Biji</span><span class="text-[#D90416]">RM 6</span></div>
+                                <div class="flex justify-between font-bold py-0.5"><span>10 Biji</span><span class="text-[#D90416]">RM 12</span></div>
+                                <div class="flex justify-between font-bold py-0.5"><span>25 Biji</span><span class="text-[#D90416]">RM 26</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 1A: PILIH PERISA (ORIGINAL ATAU SPICY) -->
+            <div class="poster-card p-4">
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="font-bubbly font-bold text-lg text-[#2D080A] flex items-center gap-2">
+                        <span class="bg-[#D90416] text-white w-6 h-6 rounded-full inline-flex items-center justify-center text-xs border border-[#2D080A]">1</span>
+                        Pilih Perisa Sos (Ori / Spicy)
+                    </h2>
+                    <span class="text-xs font-bold text-[#990000] bg-amber-200 px-2 py-0.5 rounded-full border border-[#2D080A]/20">Wajib Pilih 1</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <!-- ORIGINAL BUTTON -->
+                    <button type="button" onclick="selectFlavor('Original')" id="flavorBtn_Original" class="option-card selected rounded-2xl p-3 text-left relative overflow-hidden">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="font-bubbly font-extrabold text-xl text-[#D90416] drop-shadow-sm">ORIGINAL</span>
+                            <span class="text-2xl">🐙</span>
+                        </div>
+                        <p class="text-xs text-stone-700 font-semibold leading-snug">Sos Takoyaki klasik manis & berkrim dengan mayonis Jepun.</p>
+                        <div class="mt-2 inline-block bg-[#2D080A] text-[#FFD000] text-[11px] font-bold px-2.5 py-0.5 rounded-full">
+                            RM5 / RM10 / RM23
+                        </div>
+                    </button>
+
+                    <!-- SPICY BUTTON -->
+                    <button type="button" onclick="selectFlavor('Spicy')" id="flavorBtn_Spicy" class="option-card rounded-2xl p-3 text-left relative overflow-hidden">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="font-bubbly font-extrabold text-xl text-[#D90416] drop-shadow-sm">SPICY</span>
+                            <span class="text-2xl">🌶️</span>
+                        </div>
+                        <p class="text-xs text-stone-700 font-semibold leading-snug">Sos pedas berapi padu bersama taburan cili & bonito flakes!</p>
+                        <div class="mt-2 inline-block bg-[#D90416] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full">
+                            RM6 / RM12 / RM26
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 1B: PILIH SET KUANTITI BIJI (5 PCS, 10 PCS, 25 PCS) -->
+            <div class="poster-card p-4">
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="font-bubbly font-bold text-lg text-[#2D080A] flex items-center gap-2">
+                        <span class="bg-[#D90416] text-white w-6 h-6 rounded-full inline-flex items-center justify-center text-xs border border-[#2D080A]">2</span>
+                        Pilih Set Takoyaki
+                    </h2>
+                    <span id="selectedFlavorBadge" class="text-xs font-extrabold bg-[#2D080A] text-[#FFD000] px-2.5 py-0.5 rounded-full">
+                        Perisa: ORIGINAL
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-3 gap-2.5">
+                    <!-- 5 PCS -->
+                    <button type="button" onclick="selectSetSize(5)" id="setBtn_5" class="option-card selected rounded-2xl p-3 text-center flex flex-col items-center justify-between">
+                        <span class="text-[11px] font-extrabold uppercase tracking-wider text-stone-600">Set Santai</span>
+                        <div class="brush-badge px-3 py-1 my-1.5 font-bubbly font-bold text-base">
+                            5 BIJI
+                        </div>
+                        <div id="setPriceLabel_5" class="price-3d text-2xl sm:text-3xl leading-none mt-1">
+                            RM 5
+                        </div>
+                    </button>
+
+                    <!-- 10 PCS -->
+                    <button type="button" onclick="selectSetSize(10)" id="setBtn_10" class="option-card rounded-2xl p-3 text-center flex flex-col items-center justify-between relative">
+                        <span class="bg-[#D90416] text-white text-[10px] font-extrabold px-2 py-0.2 rounded-full">POPULAR</span>
+                        <div class="brush-badge px-3 py-1 my-1.5 font-bubbly font-bold text-base">
+                            10 BIJI
+                        </div>
+                        <div id="setPriceLabel_10" class="price-3d text-2xl sm:text-3xl leading-none mt-1">
+                            RM 10
+                        </div>
+                    </button>
+
+                    <!-- 25 PCS -->
+                    <button type="button" onclick="selectSetSize(25)" id="setBtn_25" class="option-card rounded-2xl p-3 text-center flex flex-col items-center justify-between relative">
+                        <span class="bg-amber-500 text-[#2D080A] text-[10px] font-extrabold px-2 py-0.2 rounded-full">JIMAT PARTI</span>
+                        <div class="brush-badge px-3 py-1 my-1.5 font-bubbly font-bold text-base">
+                            25 BIJI
+                        </div>
+                        <div id="setPriceLabel_25" class="price-3d text-2xl sm:text-3xl leading-none mt-1">
+                            RM 23
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 1C: PILIH INTI ATAU MIX -->
+            <div class="poster-card p-4">
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="font-bubbly font-bold text-lg text-[#2D080A] flex items-center gap-2">
+                        <span class="bg-[#D90416] text-white w-6 h-6 rounded-full inline-flex items-center justify-center text-xs border border-[#2D080A]">3</span>
+                        Pilih Inti atau Campur / Mix
+                    </h2>
+                    <span class="text-xs font-bold text-[#990000] bg-amber-200 px-2 py-0.5 rounded-full border border-[#2D080A]/20">Tiada Caj Tambahan</span>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5" id="intiGrid">
+                    <!-- Generated dynamically or static matching poster -->
+                    <button type="button" onclick="selectInti('Campur / Mix')" id="intiBtn_Campur" class="option-card selected col-span-2 sm:col-span-1 rounded-2xl p-2.5 flex items-center gap-2.5 text-left">
+                        <div class="w-11 h-11 rounded-full bg-amber-100 border-2 border-[#D90416] flex items-center justify-center text-xl flex-shrink-0 shadow-inner">
+                            🍱
+                        </div>
+                        <div>
+                            <div class="font-bubbly font-bold text-sm text-[#2D080A] leading-tight">CAMPUR / MIX</div>
+                            <div class="text-[11px] font-semibold text-stone-600">Semua inti dalam 1 set</div>
+                        </div>
+                    </button>
+
+                    <button type="button" onclick="selectInti('Udang')" id="intiBtn_Udang" class="option-card rounded-2xl p-2.5 flex items-center gap-2.5 text-left">
+                        <div class="w-11 h-11 rounded-full bg-amber-100 border-2 border-[#D90416] flex items-center justify-center text-xl flex-shrink-0 shadow-inner">
+                            🦐
+                        </div>
+                        <div>
+                            <div class="font-bubbly font-bold text-sm text-[#2D080A] leading-tight">UDANG</div>
+                            <div class="text-[11px] font-semibold text-stone-600">Isi udang segar</div>
+                        </div>
+                    </button>
+
+                    <button type="button" onclick="selectInti('Sotong')" id="intiBtn_Sotong" class="option-card rounded-2xl p-2.5 flex items-center gap-2.5 text-left">
+                        <div class="w-11 h-11 rounded-full bg-amber-100 border-2 border-[#D90416] flex items-center justify-center text-xl flex-shrink-0 shadow-inner">
+                            🦑
+                        </div>
+                        <div>
+                            <div class="font-bubbly font-bold text-sm text-[#2D080A] leading-tight">SOTONG</div>
+                            <div class="text-[11px] font-semibold text-stone-600">Kenyal & manis</div>
+                        </div>
+                    </button>
+
+                    <button type="button" onclick="selectInti('Sosej Ayam')" id="intiBtn_Sosej" class="option-card rounded-2xl p-2.5 flex items-center gap-2.5 text-left">
+                        <div class="w-11 h-11 rounded-full bg-amber-100 border-2 border-[#D90416] flex items-center justify-center text-xl flex-shrink-0 shadow-inner">
+                            🌭
+                        </div>
+                        <div>
+                            <div class="font-bubbly font-bold text-sm text-[#2D080A] leading-tight">SOSEJ AYAM</div>
+                            <div class="text-[11px] font-semibold text-stone-600">Kegemaran ramai</div>
+                        </div>
+                    </button>
+
+                    <button type="button" onclick="selectInti('Crabstik')" id="intiBtn_Crabstik" class="option-card rounded-2xl p-2.5 flex items-center gap-2.5 text-left">
+                        <div class="w-11 h-11 rounded-full bg-amber-100 border-2 border-[#D90416] flex items-center justify-center text-xl flex-shrink-0 shadow-inner">
+                            🦀
+                        </div>
+                        <div>
+                            <div class="font-bubbly font-bold text-sm text-[#2D080A] leading-tight">CRABSTIK</div>
+                            <div class="text-[11px] font-semibold text-stone-600">Jejari ketam lembut</div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 1D: KUANTITI SET & ADD TO CART -->
+            <div class="poster-card p-4">
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+                    <!-- Ringkasan Pilihan Semasa -->
+                    <div class="w-full sm:w-auto flex items-center justify-between sm:justify-start gap-3">
+                        <div>
+                            <div class="text-xs font-bold text-stone-600">Pilihan Semasa:</div>
+                            <div id="currentSelectionSummary" class="font-bubbly font-bold text-base text-[#2D080A]">
+                                Set 5 Biji • Original • Campur / Mix
+                            </div>
+                        </div>
+                        <!-- Quantity Selector -->
+                        <div class="flex items-center bg-[#2D080A] text-white rounded-full p-1 border-2 border-[#FFD000]">
+                            <button type="button" onclick="adjustMenuQty(-1)" class="w-8 h-8 rounded-full bg-[#4A1215] hover:bg-[#D90416] flex items-center justify-center font-bold text-lg transition">-</button>
+                            <span id="menuItemQty" class="px-3 font-bubbly font-bold text-base">1</span>
+                            <button type="button" onclick="adjustMenuQty(1)" class="w-8 h-8 rounded-full bg-[#D90416] hover:bg-red-500 flex items-center justify-center font-bold text-lg transition">+</button>
+                        </div>
+                    </div>
+
+                    <!-- Add To Cart Button -->
+                    <button type="button" onclick="addToCart()" class="btn-tako-primary w-full sm:w-auto px-6 py-3.5 rounded-2xl text-base flex items-center justify-center gap-2">
+                        <i class="ph-fill ph-shopping-cart-simple text-xl"></i>
+                        <span>Tambah Ke Bakul</span>
+                        <span id="addBtnPriceBadge" class="bg-[#2D080A] text-[#FFD000] px-2.5 py-0.5 rounded-full text-sm ml-1">
+                            RM 5.00
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- SCREEN 2: REVIEW ORDER (SENARAI, + / -, EDIT, CONFIRM)    -->
+        <!-- ========================================================= -->
+        <section id="screen2" class="space-y-4 hidden">
+            <div class="poster-card p-4">
+                <div class="flex items-center justify-between border-b-2 border-amber-300 pb-3 mb-3">
+                    <div>
+                        <h2 class="font-bubbly font-bold text-xl text-[#2D080A] flex items-center gap-2">
+                            <i class="ph-fill ph-clipboard-text text-[#D90416] text-2xl"></i>
+                            Semak Pesanan Anda
+                        </h2>
+                        <p class="text-xs font-semibold text-stone-600">Ubah kuantiti atau klik 'Edit' untuk tukar perisa/inti</p>
+                    </div>
+                    <button onclick="goToScreen(1)" class="btn-tako-yellow px-3 py-1.5 rounded-xl text-xs flex items-center gap-1">
+                        <i class="ph-bold ph-plus"></i> Tambah Menu
+                    </button>
+                </div>
+
+                <!-- Cart Items Container -->
+                <div id="cartItemsList" class="space-y-3">
+                    <!-- Populated via JS -->
+                </div>
+
+                <!-- Customer Name & Notes (Optional but great for pickup) -->
+                <div class="mt-4 pt-3 border-t-2 border-amber-300 space-y-3">
+                    <div>
+                        <label class="block text-xs font-extrabold uppercase text-[#2D080A] mb-1">
+                            Nama Panggilan Pelanggan (Untuk Panggilan Kaunter)
+                        </label>
+                        <input type="text" id="customerNameInput" placeholder="Contoh: Aiman / Kak Ita" class="w-full bg-white border-2 border-[#2D080A] rounded-xl px-3.5 py-2.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-[#D90416]">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-extrabold uppercase text-[#2D080A] mb-1">
+                            Nota Tambahan (Pilihan)
+                        </label>
+                        <input type="text" id="orderNotesInput" placeholder="Contoh: Sos asing / Kurang mayonis" class="w-full bg-white border-2 border-[#2D080A] rounded-xl px-3.5 py-2 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#D90416]">
+                    </div>
+                </div>
+
+                <!-- Price Summary Box -->
+                <div class="mt-4 bg-[#2D080A] text-white rounded-2xl p-4 border-2 border-[#FFD000]">
+                    <div class="flex justify-between text-xs text-amber-200 font-semibold mb-1">
+                        <span>Jumlah Set Takoyaki:</span>
+                        <span id="reviewTotalSets">0 Set (0 Biji)</span>
+                    </div>
+                    <div class="flex justify-between items-center pt-2 border-t border-amber-500/30">
+                        <span class="font-bubbly font-bold text-base text-[#FFD000]">JUMLAH HARGA:</span>
+                        <span id="reviewTotalPrice" class="font-bubbly font-extrabold text-2xl text-white">RM 0.00</span>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <button type="button" onclick="goToScreen(1)" class="btn-tako-yellow py-3 rounded-2xl text-sm flex items-center justify-center gap-2">
+                        <i class="ph-bold ph-arrow-left"></i> Kembali Ke Menu
+                    </button>
+                    <button type="button" onclick="proceedToPayment()" class="btn-tako-primary py-3.5 rounded-2xl text-base flex items-center justify-center gap-2">
+                        <span>Confirm Order</span>
+                        <i class="ph-bold ph-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- SCREEN 3: PAYMENT (DUITNOW QR, FPX, VERIFICATION)         -->
+        <!-- ========================================================= -->
+        <section id="screen3" class="space-y-4 hidden">
+            <div class="poster-card p-4">
+                <div class="flex items-center justify-between border-b-2 border-amber-300 pb-3 mb-3">
+                    <div>
+                        <h2 class="font-bubbly font-bold text-xl text-[#2D080A] flex items-center gap-2">
+                            <i class="ph-fill ph-shield-check text-[#D90416] text-2xl"></i>
+                            Pembayaran Pesanan
+                        </h2>
+                        <p class="text-xs font-semibold text-stone-700">Hanya pesanan yang selesai dibayar akan masuk ke giliran dapur</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-[10px] font-extrabold uppercase text-stone-600">Perlu Dibayar</div>
+                        <div id="paymentAmountDisplay" class="font-bubbly font-extrabold text-xl text-[#D90416]">RM 0.00</div>
+                    </div>
+                </div>
+
+                <!-- Payment Method Tabs -->
+                <div class="grid grid-cols-2 gap-2.5 mb-4">
+                    <button type="button" onclick="selectPaymentMethod('DUITNOW_QR')" id="payTab_QR" class="option-card selected rounded-2xl p-3 flex items-center gap-2.5">
+                        <div class="w-10 h-10 rounded-xl bg-[#ED2C67] text-white flex items-center justify-center font-extrabold text-lg flex-shrink-0 shadow">
+                            QR
+                        </div>
+                        <div class="text-left">
+                            <div class="font-bubbly font-bold text-sm text-[#2D080A]">DuitNow QR</div>
+                            <div class="text-[11px] font-semibold text-stone-600">Imbas & Bayar Segera</div>
+                        </div>
+                    </button>
+
+                    <button type="button" onclick="selectPaymentMethod('FPX_BANKING')" id="payTab_FPX" class="option-card rounded-2xl p-3 flex items-center gap-2.5">
+                        <div class="w-10 h-10 rounded-xl bg-[#1A4B8C] text-white flex items-center justify-center font-extrabold text-sm flex-shrink-0 shadow">
+                            FPX
+                        </div>
+                        <div class="text-left">
+                            <div class="font-bubbly font-bold text-sm text-[#2D080A]">Online Banking</div>
+                            <div class="text-[11px] font-semibold text-stone-600">Perbankan Internet FPX</div>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- PANEL 1: DUITNOW QR VIEW -->
+                <div id="paymentPanel_QR" class="bg-white border-3 border-[#ED2C67] rounded-2xl p-4 text-center shadow-inner">
+                    <div class="inline-flex items-center gap-1.5 bg-[#ED2C67] text-white text-xs font-extrabold px-3 py-1 rounded-full mb-2">
+                        <i class="ph-fill ph-qr-code"></i> NATIONAL QR STANDARD • DUITNOW QR
+                    </div>
+                    <div class="text-xs font-bold text-stone-700 mb-2">
+                        MOSHI MOSHI TAKOYAKI ENT.
+                    </div>
+
+                    <!-- Realistic Custom SVG DuitNow QR Code Frame -->
+                    <div class="w-48 h-48 mx-auto bg-white p-3 rounded-2xl border-4 border-[#ED2C67] shadow-md relative flex items-center justify-center">
+                        <svg viewBox="0 0 200 200" class="w-full h-full">
+                            <!-- Corner Finder Patterns -->
+                            <rect x="10" y="10" width="50" height="50" rx="6" fill="none" stroke="#2D080A" stroke-width="8"/>
+                            <rect x="22" y="22" width="26" height="26" rx="3" fill="#ED2C67"/>
+                            <rect x="140" y="10" width="50" height="50" rx="6" fill="none" stroke="#2D080A" stroke-width="8"/>
+                            <rect x="152" y="22" width="26" height="26" rx="3" fill="#ED2C67"/>
+                            <rect x="10" y="140" width="50" height="50" rx="6" fill="none" stroke="#2D080A" stroke-width="8"/>
+                            <rect x="22" y="152" width="26" height="26" rx="3" fill="#ED2C67"/>
+                            <!-- QR Matrix Dots -->
+                            <g fill="#2D080A">
+                                <rect x="72" y="12" width="10" height="10"/><rect x="92" y="12" width="18" height="10"/><rect x="120" y="12" width="10" height="10"/>
+                                <rect x="72" y="30" width="18" height="10"/><rect x="102" y="30" width="10" height="20"/><rect x="120" y="40" width="10" height="10"/>
+                                <rect x="12" y="72" width="20" height="10"/><rect x="42" y="72" width="18" height="10"/><rect x="72" y="62" width="10" height="20"/>
+                                <rect x="12" y="92" width="10" height="20"/><rect x="32" y="92" width="10" height="10"/><rect x="52" y="102" width="20" height="10"/>
+                                <rect x="12" y="120" width="28" height="10"/><rect x="52" y="120" width="10" height="10"/>
+                                <rect x="130" y="72" width="20" height="10"/><rect x="160" y="72" width="28" height="10"/>
+                                <rect x="140" y="92" width="10" height="20"/><rect x="160" y="92" width="10" height="10"/><rect x="180" y="92" width="10" height="28"/>
+                                <rect x="72" y="135" width="20" height="10"/><rect x="102" y="135" width="10" height="20"/><rect x="122" y="145" width="18" height="10"/>
+                                <rect x="72" y="155" width="10" height="20"/><rect x="92" y="165" width="25" height="10"/><rect x="128" y="165" width="10" height="22"/>
+                                <rect x="150" y="140" width="20" height="10"/><rect x="150" y="160" width="10" height="28"/><rect x="170" y="155" width="18" height="18"/>
+                            </g>
+                            <!-- Center Mascot Badge -->
+                            <rect x="75" y="75" width="50" height="50" rx="10" fill="#ED2C67" stroke="#FFFFFF" stroke-width="4"/>
+                            <text x="100" y="106" text-anchor="middle" fill="#FFFFFF" font-family="Fredoka" font-weight="bold" font-size="18">QR</text>
+                        </svg>
+                    </div>
+
+                    <p class="text-xs text-stone-600 font-semibold mt-2">
+                        Sokong Maybank MAE, Touch 'n Go eWallet, CIMB Octo, GrabPay & Semua Aplikasi Bank
+                    </p>
+                </div>
+
+                <!-- PANEL 2: ONLINE BANKING / FPX VIEW -->
+                <div id="paymentPanel_FPX" class="hidden bg-white border-2 border-[#2D080A] rounded-2xl p-3.5 shadow-inner">
+                    <div class="flex items-center justify-between mb-2.5">
+                        <span class="text-xs font-extrabold uppercase text-[#1A4B8C] flex items-center gap-1">
+                            <i class="ph-fill ph-bank"></i> Pilih Bank FPX Anda:
+                        </span>
+                        <span class="text-[11px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">Gerbang Selamat</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2" id="fpxBankList">
+                        <button type="button" onclick="selectFpxBank('Maybank2u')" class="fpx-bank-btn option-card selected p-2.5 rounded-xl flex items-center gap-2 text-left text-xs font-bold">
+                            <span class="w-7 h-7 rounded-lg bg-amber-400 text-black flex items-center justify-center font-extrabold">M</span>
+                            <span>Maybank2u</span>
+                        </button>
+                        <button type="button" onclick="selectFpxBank('CIMB Clicks')" class="fpx-bank-btn option-card p-2.5 rounded-xl flex items-center gap-2 text-left text-xs font-bold">
+                            <span class="w-7 h-7 rounded-lg bg-red-600 text-white flex items-center justify-center font-extrabold">C</span>
+                            <span>CIMB Clicks</span>
+                        </button>
+                        <button type="button" onclick="selectFpxBank('Bank Islam')" class="fpx-bank-btn option-card p-2.5 rounded-xl flex items-center gap-2 text-left text-xs font-bold">
+                            <span class="w-7 h-7 rounded-lg bg-rose-800 text-white flex items-center justify-center font-extrabold">BI</span>
+                            <span>Bank Islam</span>
+                        </button>
+                        <button type="button" onclick="selectFpxBank('RHB Now')" class="fpx-bank-btn option-card p-2.5 rounded-xl flex items-center gap-2 text-left text-xs font-bold">
+                            <span class="w-7 h-7 rounded-lg bg-sky-600 text-white flex items-center justify-center font-extrabold">R</span>
+                            <span>RHB Now</span>
+                        </button>
+                        <button type="button" onclick="selectFpxBank('Public Bank')" class="fpx-bank-btn option-card p-2.5 rounded-xl flex items-center gap-2 text-left text-xs font-bold">
+                            <span class="w-7 h-7 rounded-lg bg-red-700 text-white flex items-center justify-center font-extrabold">PB</span>
+                            <span>Public Bank</span>
+                        </button>
+                        <button type="button" onclick="selectFpxBank('Hong Leong Connect')" class="fpx-bank-btn option-card p-2.5 rounded-xl flex items-center gap-2 text-left text-xs font-bold">
+                            <span class="w-7 h-7 rounded-lg bg-blue-900 text-white flex items-center justify-center font-extrabold">HL</span>
+                            <span>Hong Leong</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- PAYMENT VERIFICATION BOX -->
+                <div id="paymentVerificationBox" class="mt-4 bg-[#FFF6C5] border-2 border-[#2D080A] rounded-2xl p-3.5">
+                    <div class="flex items-start gap-2.5">
+                        <i class="ph-fill ph-info text-[#D90416] text-xl flex-shrink-0 mt-0.5"></i>
+                        <div class="text-xs font-semibold text-stone-800">
+                            <strong>Pengesahan Pembayaran (Payment Verification):</strong>
+                            Klik butang di bawah selepas membuat bayaran. Merchant akan menerima notifikasi untuk mengesahkan bayaran anda sebelum nombor giliran dikeluarkan.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LIVE WAITING FOR MERCHANT VERIFICATION BANNER -->
+                <div id="waitingMerchantVerifyBanner" class="hidden mt-4 bg-[#2D080A] text-white border-3 border-[#FFD000] rounded-2xl p-4 text-center shadow-xl">
+                    <div class="w-12 h-12 rounded-full bg-amber-500/20 border-2 border-[#FFD000] text-[#FFD000] flex items-center justify-center mx-auto mb-2 animate-spin">
+                        <i class="ph-bold ph-spinner-gap text-2xl"></i>
+                    </div>
+                    <h3 class="font-bubbly font-bold text-base text-[#FFD000]">
+                        Menunggu Merchant Sahkan Pembayaran...
+                    </h3>
+                    <p class="text-xs text-amber-100/90 mt-1">
+                        Notis pesanan telah dihantar ke Merchant Dashboard. Nombor giliran anda akan dipaparkan secara automatik sebaik sahaja bayaran disahkan!
+                    </p>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="mt-4 space-y-2.5">
+                    <button type="button" id="verifyPayBtn" onclick="verifyAndSubmitOrder(true)" class="btn-tako-primary w-full py-3.5 rounded-2xl text-base flex items-center justify-center gap-2">
+                        <i class="ph-fill ph-check-circle text-xl"></i>
+                        <span id="verifyPayBtnText">Saya Dah Bayar • Hantar Pengesahan</span>
+                    </button>
+
+                    <div class="grid grid-cols-2 gap-2">
+                        <button type="button" onclick="goToScreen(2)" class="btn-tako-yellow py-2.5 rounded-xl text-xs flex items-center justify-center gap-1">
+                            <i class="ph-bold ph-arrow-left"></i> Ubah Pesanan
+                        </button>
+                        <button type="button" onclick="verifyAndSubmitOrder(false)" class="bg-stone-200 hover:bg-stone-300 border-2 border-stone-500 text-stone-800 font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-1 transition">
+                            <i class="ph-bold ph-x-circle text-red-600"></i> Uji Bayaran Gagal
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- SCREEN 4: QUEUE TRACKING (NOMBOR GILIRAN, STATUS, MASA)   -->
+        <!-- ========================================================= -->
+        <section id="screen4" class="space-y-4 hidden">
+            <div class="poster-card p-5 text-center relative overflow-hidden">
+                <!-- Live Badge -->
+                <div class="inline-flex items-center gap-1.5 bg-emerald-700 text-white text-[11px] font-extrabold px-3 py-1 rounded-full mb-2 shadow">
+                    <span class="w-2 h-2 rounded-full bg-emerald-300 animate-ping"></span>
+                    PEMBAYARAN DISAHKAN • LIVE QUEUE TRACKING
+                </div>
+
+                <div class="text-xs font-extrabold uppercase text-stone-600 mt-1">Nombor Giliran Anda</div>
+                
+                <!-- Queue Number Giant Display -->
+                <div class="my-2 inline-block bg-[#2D080A] border-4 border-[#FFD000] rounded-3xl px-8 py-4 shadow-xl">
+                    <div id="queueNumberDisplay" class="font-bubbly font-extrabold text-5xl sm:text-6xl text-[#FFD000] tracking-wider">
+                        #101
+                    </div>
+                    <div id="queueCustomerName" class="text-xs font-bold text-amber-200 mt-1">
+                        Pelanggan: Tetamu
+                    </div>
+                </div>
+
+                <!-- Estimated Waiting Time Box -->
+                <div class="mt-3 bg-white/90 border-2 border-[#2D080A] rounded-2xl p-3 max-w-xs mx-auto shadow-sm">
+                    <div class="text-xs font-bold text-stone-600 flex items-center justify-center gap-1">
+                        <i class="ph-fill ph-clock-countdown text-[#D90416] text-base"></i>
+                        <span>Anggaran Masa Menunggu:</span>
+                    </div>
+                    <div id="estimatedWaitDisplay" class="font-bubbly font-bold text-2xl text-[#D90416] mt-0.5">
+                        ~ 8 - 10 Minit
+                    </div>
+                    <div id="ordersAheadText" class="text-[11px] font-semibold text-stone-600">
+                        Dimasak segar panas-panas di kuali takoyaki!
+                    </div>
+                </div>
+
+                <!-- Status Progress Steps -->
+                <div class="mt-5 text-left space-y-2.5">
+                    <!-- Step 1: Paid & In Queue -->
+                    <div id="statusCard_QUEUED" class="flex items-center gap-3 p-3 rounded-2xl border-2 border-emerald-600 bg-emerald-50">
+                        <div class="w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xl flex-shrink-0">
+                            <i class="ph-bold ph-check"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="font-bubbly font-bold text-sm text-[#2D080A]">1. Pesanan Diterima & Dibayar</div>
+                            <div class="text-xs font-semibold text-stone-600">Resit disahkan dalam sistem giliran dapur</div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Sedang Disediakan -->
+                    <div id="statusCard_PREPARING" class="flex items-center gap-3 p-3 rounded-2xl border-2 border-[#D90416] bg-amber-100 shadow-md">
+                        <div class="w-10 h-10 rounded-full bg-[#D90416] text-white flex items-center justify-center text-xl flex-shrink-0 animate-bounce">
+                            <i class="ph-fill ph-fire"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="font-bubbly font-bold text-sm text-[#D90416]">2. Sedang Disediakan 🔥</div>
+                            <div class="text-xs font-semibold text-stone-700">Krew kami sedang memasak takoyaki anda panas-panas!</div>
+                        </div>
+                        <span class="text-[10px] font-extrabold bg-[#2D080A] text-[#FFD000] px-2 py-0.5 rounded-full">SEMASA</span>
+                    </div>
+
+                    <!-- Step 3: Status Siap -->
+                    <div id="statusCard_READY" class="flex items-center gap-3 p-3 rounded-2xl border-2 border-stone-300 bg-stone-100 opacity-60">
+                        <div class="w-10 h-10 rounded-full bg-stone-400 text-white flex items-center justify-center text-xl flex-shrink-0">
+                            <i class="ph-fill ph-bag"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="font-bubbly font-bold text-sm text-stone-700">3. Siap Untuk Diambil</div>
+                            <div class="text-xs font-semibold text-stone-500">Anda akan menerima notifikasi sebaik sahaja siap</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summary of Ordered Items -->
+                <div class="mt-4 bg-[#FFFDF0] border-2 border-amber-400 rounded-2xl p-3 text-left">
+                    <div class="text-xs font-extrabold uppercase text-[#2D080A] mb-1.5 flex items-center justify-between">
+                        <span>Ringkasan Pesanan Anda:</span>
+                        <span id="trackingOrderIdLabel" class="font-mono text-[10px] text-stone-500">ID: -</span>
+                    </div>
+                    <div id="trackingOrderItems" class="space-y-1 text-xs font-bold text-stone-800">
+                        <!-- Populated via JS -->
+                    </div>
+                </div>
+
+                <!-- Helpful Demo Shortcut to Trigger Ready State Immediately -->
+                <div class="mt-4 pt-3 border-t-2 border-dashed border-amber-400">
+                    <p class="text-[11px] font-bold text-stone-700 mb-2">
+                        💡 <em>Simulasi Dapur (Realtime DB): Klik butang di bawah untuk menukar status pesanan ini kepada "SIAP" di Firebase:</em>
+                    </p>
+                    <button type="button" onclick="simulateKitchenMarkReady()" class="btn-tako-yellow w-full py-2.5 rounded-xl text-xs flex items-center justify-center gap-1.5">
+                        <i class="ph-fill ph-bell-ringing text-base text-[#D90416]"></i>
+                        <span>Tandakan Pesanan Siap Sekarang (Ke Skrin 5)</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- SCREEN 5: READY FOR PICKUP (NOTIFIKASI SIAP & AMBIL)      -->
+        <!-- ========================================================= -->
+        <section id="screen5" class="space-y-4 hidden">
+            <div class="poster-card p-5 text-center relative overflow-hidden">
+                <!-- Flashing Ready Notification Banner -->
+                <div class="pulse-ready bg-emerald-600 text-white border-3 border-[#2D080A] rounded-2xl p-3 mb-4">
+                    <div class="flex items-center justify-center gap-2 font-bubbly font-extrabold text-lg sm:text-xl">
+                        <i class="ph-fill ph-bell-ringing text-2xl text-[#FFD000] animate-bounce"></i>
+                        <span>PESANAN ANDA TELAH SIAP!</span>
+                    </div>
+                    <p class="text-xs font-semibold text-emerald-100 mt-0.5">
+                        Takoyaki panas-panas sedia untuk diambil di kaunter sekarang!
+                    </p>
+                </div>
+
+                <div class="text-xs font-extrabold uppercase text-stone-700">Tunjukkan Nombor Giliran Ini Di Kaunter</div>
+
+                <!-- Huge Pickup Queue Card -->
+                <div class="my-3 bg-[#2D080A] border-4 border-[#FFD000] rounded-3xl p-6 shadow-2xl relative">
+                    <div class="text-[11px] font-extrabold uppercase tracking-widest text-amber-300 mb-1">
+                        NOMBOR QUEUE PICKUP
+                    </div>
+                    <div id="pickupQueueNumber" class="font-bubbly font-extrabold text-6xl sm:text-7xl text-[#FFD000] leading-none">
+                        #101
+                    </div>
+                    <div id="pickupCustomerName" class="mt-2 inline-block bg-[#D90416] text-white text-xs font-extrabold px-4 py-1 rounded-full">
+                        Pelanggan: Tetamu
+                    </div>
+                </div>
+
+                <!-- Pickup Counter Instructions -->
+                <div class="bg-white border-2 border-[#2D080A] rounded-2xl p-4 text-left space-y-2 shadow-sm">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-10 h-10 rounded-xl bg-amber-100 border-2 border-[#2D080A] flex items-center justify-center text-xl flex-shrink-0">
+                            🥡
+                        </div>
+                        <div>
+                            <div class="font-bubbly font-bold text-sm text-[#2D080A]">Sila Datang Ambil Makanan Di Kaunter</div>
+                            <div class="text-xs font-semibold text-stone-600">Sebut atau tunjukkan skrin nombor giliran anda kepada krew Moshi Moshi Takoyaki.</div>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-stone-200 pt-2 mt-2">
+                        <div class="text-[11px] font-extrabold text-stone-500 uppercase mb-1">Senarai Makanan Siap:</div>
+                        <div id="pickupItemsSummary" class="space-y-1 text-xs font-bold text-[#2D080A]">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Complete Pickup & New Order Button -->
+                <div class="mt-5">
+                    <button type="button" onclick="completePickupAndReset()" class="btn-tako-primary w-full py-4 rounded-2xl text-base flex items-center justify-center gap-2">
+                        <i class="ph-fill ph-smiley-wink text-xl"></i>
+                        <span>Saya Dah Ambil Makanan • Buat Pesanan Baru</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- POSTER SOCIAL FOOTER (@moshimoshi_takoyaki) -->
+        <footer class="mt-6 mb-4 text-center">
+            <div class="inline-flex flex-wrap items-center justify-center gap-2 bg-[#2D080A] text-white px-5 py-2 rounded-full border-2 border-[#FFD000] shadow-lg">
+                <span class="font-bubbly font-bold text-xs sm:text-sm tracking-wide text-white">IKUTI KAMI DI</span>
+                <!-- Facebook Icon -->
+                <span class="w-6 h-6 rounded-full bg-[#1877F2] text-white inline-flex items-center justify-center font-extrabold text-xs">
+                    f
+                </span>
+                <!-- TikTok Icon -->
+                <span class="w-6 h-6 rounded-full bg-black border border-white/40 text-white inline-flex items-center justify-center text-xs">
+                    <i class="ph-fill ph-tiktok-logo"></i>
+                </span>
+                <span class="font-bold text-xs sm:text-sm text-[#FFD000]">@moshimoshi_takoyaki</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- FLOATING BOTTOM CART BAR (VISIBLE ON SCREEN 1 WHEN CART HAS ITEMS) -->
+    <div id="floatingCartBar" class="fixed bottom-0 left-0 right-0 z-40 p-3 hidden">
+        <div class="max-w-lg mx-auto bg-[#2D080A] border-3 border-[#FFD000] rounded-2xl p-3 shadow-2xl flex items-center justify-between text-white">
+            <div class="flex items-center gap-3">
+                <div class="relative bg-[#D90416] w-11 h-11 rounded-xl flex items-center justify-center border-2 border-[#FFD000]">
+                    <i class="ph-fill ph-shopping-bag-open text-2xl"></i>
+                    <span id="floatingCartCount" class="absolute -top-2 -right-2 bg-[#FFD000] text-[#2D080A] font-extrabold text-xs w-6 h-6 rounded-full flex items-center justify-center border-2 border-[#2D080A]">
+                        0
+                    </span>
+                </div>
+                <div>
+                    <div class="text-[11px] font-bold text-amber-200">Jumlah Bakul Semasa</div>
+                    <div id="floatingCartTotal" class="font-bubbly font-extrabold text-xl text-[#FFD000] leading-none">
+                        RM 0.00
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" onclick="goToScreen(2)" class="btn-tako-yellow px-5 py-2.5 rounded-xl text-sm flex items-center gap-1.5">
+                <span>Semak Order</span>
+                <i class="ph-bold ph-caret-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- MODAL 1: EDIT CART ITEM (TUKAR SET, PERISA, INTI)         -->
+    <!-- ========================================================= -->
+    <div id="editItemModal" class="fixed inset-0 bg-black/75 z-50 hidden items-center justify-center p-4">
+        <div class="poster-card max-w-md w-full p-4 relative animate-fadeIn">
+            <div class="flex items-center justify-between border-b-2 border-amber-300 pb-2.5 mb-3">
+                <h3 class="font-bubbly font-bold text-lg text-[#2D080A] flex items-center gap-1.5">
+                    <i class="ph-fill ph-pencil-simple-line text-[#D90416]"></i>
+                    Edit Pilihan Takoyaki
+                </h3>
+                <button type="button" onclick="closeEditModal()" class="w-8 h-8 rounded-full bg-[#2D080A] text-white flex items-center justify-center font-bold">✕</button>
+            </div>
+
+            <div class="space-y-3 text-xs">
+                <!-- Edit Flavor -->
+                <div>
+                    <label class="font-extrabold uppercase text-[#2D080A] block mb-1">Perisa Sos:</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button type="button" onclick="setEditFlavor('Original')" id="editFlavor_Original" class="option-card p-2.5 rounded-xl font-bubbly font-bold text-sm text-center">ORIGINAL 🐙</button>
+                        <button type="button" onclick="setEditFlavor('Spicy')" id="editFlavor_Spicy" class="option-card p-2.5 rounded-xl font-bubbly font-bold text-sm text-center">SPICY 🌶️</button>
+                    </div>
+                </div>
+
+                <!-- Edit Set Size -->
+                <div>
+                    <label class="font-extrabold uppercase text-[#2D080A] block mb-1">Saiz Set (Biji):</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button type="button" onclick="setEditSize(5)" id="editSize_5" class="option-card p-2.5 rounded-xl font-bubbly font-bold text-sm text-center">5 Biji</button>
+                        <button type="button" onclick="setEditSize(10)" id="editSize_10" class="option-card p-2.5 rounded-xl font-bubbly font-bold text-sm text-center">10 Biji</button>
+                        <button type="button" onclick="setEditSize(25)" id="editSize_25" class="option-card p-2.5 rounded-xl font-bubbly font-bold text-sm text-center">25 Biji</button>
+                    </div>
+                </div>
+
+                <!-- Edit Inti -->
+                <div>
+                    <label class="font-extrabold uppercase text-[#2D080A] block mb-1">Pilihan Inti:</label>
+                    <div class="grid grid-cols-2 gap-2" id="editIntiContainer">
+                        <button type="button" onclick="setEditInti('Campur / Mix')" data-inti="Campur / Mix" class="edit-inti-btn option-card p-2 rounded-xl font-bold text-left">🍱 Campur / Mix</button>
+                        <button type="button" onclick="setEditInti('Udang')" data-inti="Udang" class="edit-inti-btn option-card p-2 rounded-xl font-bold text-left">🦐 Udang</button>
+                        <button type="button" onclick="setEditInti('Sotong')" data-inti="Sotong" class="edit-inti-btn option-card p-2 rounded-xl font-bold text-left">🦑 Sotong</button>
+                        <button type="button" onclick="setEditInti('Sosej Ayam')" data-inti="Sosej Ayam" class="edit-inti-btn option-card p-2 rounded-xl font-bold text-left">🌭 Sosej Ayam</button>
+                        <button type="button" onclick="setEditInti('Crabstik')" data-inti="Crabstik" class="edit-inti-btn option-card p-2 rounded-xl font-bold text-left col-span-2">🦀 Crabstik</button>
+                    </div>
+                </div>
+
+                <!-- Updated Price Preview -->
+                <div class="bg-[#2D080A] text-white p-3 rounded-xl flex justify-between items-center">
+                    <span class="font-bold">Harga Seunit Baru:</span>
+                    <span id="editModalPricePreview" class="font-bubbly font-bold text-lg text-[#FFD000]">RM 5.00</span>
+                </div>
+            </div>
+
+            <div class="mt-4 grid grid-cols-2 gap-2">
+                <button type="button" onclick="closeEditModal()" class="bg-stone-300 font-bold py-2.5 rounded-xl text-xs">Batal</button>
+                <button type="button" onclick="saveEditedItem()" class="btn-tako-primary py-2.5 rounded-xl text-sm">Simpan Perubahan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- MODAL 2: KITCHEN / REALTIME DB QUEUE SIMULATOR DRAWER     -->
+    <!-- ========================================================= -->
+    <div id="kitchenSimulatorModal" class="fixed inset-0 bg-black/75 z-50 hidden items-end sm:items-center justify-center p-2 sm:p-4">
+        <div class="bg-[#1F080A] text-white border-3 border-[#FFD000] rounded-2xl max-w-lg w-full p-4 max-h-[85vh] flex flex-col shadow-2xl">
+            <div class="flex items-center justify-between border-b border-amber-500/30 pb-2.5 mb-3">
+                <div>
+                    <h3 class="font-bubbly font-bold text-base text-[#FFD000] flex items-center gap-2">
+                        <i class="ph-fill ph-cooking-pot text-xl"></i>
+                        Panel Dapur Realtime DB (moshitako001)
+                    </h3>
+                    <p class="text-[11px] text-amber-200/80">Urus status pesanan secara langsung di Firebase Realtime Database</p>
+                </div>
+                <button type="button" onclick="toggleKitchenSimulator()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center font-bold">✕</button>
+            </div>
+
+            <div id="kitchenOrdersList" class="flex-1 overflow-y-auto space-y-2.5 pr-1 text-xs">
+                <div class="text-center py-6 text-amber-200/60">Memuatkan senarai pesanan dari Firebase...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CUSTOM TOAST NOTIFICATION -->
+    <div id="toastContainer" class="fixed top-12 left-1/2 -translate-x-1/2 z-50 pointer-events-none flex flex-col items-center gap-2 w-full max-w-sm px-4"></div>
+
+    <!-- ========================================================= -->
+    <!-- FIREBASE REALTIME DATABASE & APPLICATION LOGIC            -->
+    <!-- ========================================================= -->
+    <script type="module">
+        // Import the functions from Firebase SDKs
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { 
+            getDatabase, 
+            ref, 
+            set, 
+            push, 
+            update, 
+            onValue, 
+            get 
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+
+        // Your web app's Firebase configuration (as provided in prompt)
+        const firebaseConfig = {
+            apiKey: "AIzaSyBDDm_iy9eivI0rhyJZEO_ev396fD_fZrQ",
+            authDomain: "moshitako001.firebaseapp.com",
+            databaseURL: "https://moshitako001-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "moshitako001",
+            storageBucket: "moshitako001.firebasestorage.app",
+            messagingSenderId: "451700149020",
+            appId: "1:451700149020:web:b3f37448dbebd6f83988d9"
+        };
+
+        // Initialize Firebase & Realtime Database
+        const app = initializeApp(firebaseConfig);
+        const rtdb = getDatabase(app);
+
+        // PRICING TABLE MATCHING POSTER EXACTLY
+        const PRICE_TABLE = {
+            Original: { 5: 5, 10: 10, 25: 23 },
+            Spicy:    { 5: 6, 10: 12, 25: 26 }
+        };
+
+        // APPLICATION STATE
+        const state = {
+            currentScreen: 1,
+            // Screen 1 current builder selection
+            selectedFlavor: 'Original',
+            selectedSize: 5,
+            selectedInti: 'Campur / Mix',
+            selectedQty: 1,
+            // Cart items
+            cart: [],
+            // Editing modal state
+            editingCartIndex: null,
+            editFlavor: 'Original',
+            editSize: 5,
+            editInti: 'Campur / Mix',
+            // Payment state
+            paymentMethod: 'DUITNOW_QR',
+            selectedBank: 'Maybank2u',
+            // Active Paid Order tracking
+            activeOrderId: null,
+            activeOrderData: null,
+            allRecentOrders: {},
+            notifiedReadyForOrderId: null
+        };
+
+        // Web Audio Chime for Notifications (No external audio files required)
+        function playSoundEffect(type = 'chime') {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const now = ctx.currentTime;
+                if (type === 'add') {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(520, now);
+                    osc.frequency.exponentialRampToValueAtTime(780, now + 0.12);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.14);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.15);
+                } else if (type === 'ready') {
+                    // Ding-Dong-Ding Pickup Bell
+                    const notes = [659.25, 523.25, 783.99];
+                    notes.forEach((freq, idx) => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(freq, now + idx * 0.22);
+                        gain.gain.setValueAtTime(0.25, now + idx * 0.22);
+                        gain.gain.exponentialRampToValueAtTime(0.008, now + idx * 0.22 + 0.45);
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.start(now + idx * 0.22);
+                        osc.stop(now + idx * 0.22 + 0.46);
+                    });
+                }
+            } catch (e) {
+                // Ignore audio context restrictions if not interacted
+            }
+        }
+
+        // Custom Toast Helper
+        function showToast(message, variant = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            const bgClass = variant === 'error' 
+                ? 'bg-[#D90416] text-white border-[#FFD000]' 
+                : variant === 'info'
+                ? 'bg-[#2D080A] text-[#FFD000] border-[#FFD000]'
+                : 'bg-emerald-700 text-white border-[#FFD000]';
+
+            toast.className = `${bgClass} border-2 px-4 py-2.5 rounded-2xl shadow-xl font-bubbly font-bold text-xs sm:text-sm flex items-center gap-2 transition-all duration-300 transform translate-y-0`;
+            toast.innerHTML = `<i class="ph-fill ${variant === 'error' ? 'ph-warning-circle' : 'ph-check-circle'} text-lg"></i><span>${message}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(-10px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 2800);
+        }
+
+        // =========================================================
+        // SCREEN 1: MENU SELECTION FUNCTIONS
+        // =========================================================
+        window.selectFlavor = function(flavor) {
+            state.selectedFlavor = flavor;
+            document.getElementById('flavorBtn_Original').classList.toggle('selected', flavor === 'Original');
+            document.getElementById('flavorBtn_Spicy').classList.toggle('selected', flavor === 'Spicy');
+            document.getElementById('selectedFlavorBadge').textContent = `Perisa: ${flavor.toUpperCase()} ${flavor === 'Spicy' ? '🌶️' : '🐙'}`;
+
+            // Update displayed prices on the 5, 10, 25 cards dynamically
+            [5, 10, 25].forEach(size => {
+                const price = PRICE_TABLE[flavor][size];
+                document.getElementById(`setPriceLabel_${size}`).textContent = `RM ${price}`;
+            });
+
+            updateCurrentSelectionUI();
+        };
+
+        window.selectSetSize = function(size) {
+            state.selectedSize = size;
+            [5, 10, 25].forEach(s => {
+                document.getElementById(`setBtn_${s}`).classList.toggle('selected', s === size);
+            });
+            updateCurrentSelectionUI();
+        };
+
+        window.selectInti = function(inti) {
+            state.selectedInti = inti;
+            const mapIds = {
+                'Campur / Mix': 'intiBtn_Campur',
+                'Udang': 'intiBtn_Udang',
+                'Sotong': 'intiBtn_Sotong',
+                'Sosej Ayam': 'intiBtn_Sosej',
+                'Crabstik': 'intiBtn_Crabstik'
+            };
+            Object.entries(mapIds).forEach(([key, btnId]) => {
+                const el = document.getElementById(btnId);
+                if (el) el.classList.toggle('selected', key === inti);
+            });
+            updateCurrentSelectionUI();
+        };
+
+        window.adjustMenuQty = function(delta) {
+            const next = state.selectedQty + delta;
+            if (next < 1 || next > 20) return;
+            state.selectedQty = next;
+            document.getElementById('menuItemQty').textContent = state.selectedQty;
+            updateCurrentSelectionUI();
+        };
+
+        function updateCurrentSelectionUI() {
+            const unitPrice = PRICE_TABLE[state.selectedFlavor][state.selectedSize];
+            const lineTotal = unitPrice * state.selectedQty;
+            document.getElementById('currentSelectionSummary').textContent = 
+                `Set ${state.selectedSize} Biji • ${state.selectedFlavor} • ${state.selectedInti}`;
+            document.getElementById('addBtnPriceBadge').textContent = `RM ${lineTotal.toFixed(2)}`;
+        }
+
+        window.addToCart = function() {
+            const unitPrice = PRICE_TABLE[state.selectedFlavor][state.selectedSize];
+            // Check if identical configuration already exists in cart
+            const existingIdx = state.cart.findIndex(item => 
+                item.flavor === state.selectedFlavor &&
+                item.size === state.selectedSize &&
+                item.inti === state.selectedInti
+            );
+
+            if (existingIdx > -1) {
+                state.cart[existingIdx].qty += state.selectedQty;
+            } else {
+                state.cart.push({
+                    id: 'item_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
+                    flavor: state.selectedFlavor,
+                    size: state.selectedSize,
+                    inti: state.selectedInti,
+                    unitPrice: unitPrice,
+                    qty: state.selectedQty
+                });
+            }
+
+            // Reset qty selector to 1
+            state.selectedQty = 1;
+            document.getElementById('menuItemQty').textContent = '1';
+            updateCurrentSelectionUI();
+            updateCartViews();
+            playSoundEffect('add');
+            showToast(`Ditambah: Set ${state.selectedSize} Biji (${state.selectedFlavor} - ${state.selectedInti})`);
+        };
+
+        // =========================================================
+        // SCREEN 2: REVIEW ORDER & EDIT ITEM FUNCTIONS
+        // =========================================================
+        function getCartTotals() {
+            let totalSets = 0;
+            let totalPcs = 0;
+            let totalPrice = 0;
+            state.cart.forEach(item => {
+                totalSets += item.qty;
+                totalPcs += item.size * item.qty;
+                totalPrice += item.unitPrice * item.qty;
+            });
+            return { totalSets, totalPcs, totalPrice };
+        }
+
+        function updateCartViews() {
+            const { totalSets, totalPcs, totalPrice } = getCartTotals();
+
+            // Floating Bar on Screen 1
+            const floatingBar = document.getElementById('floatingCartBar');
+            if (state.currentScreen === 1 && totalSets > 0) {
+                floatingBar.classList.remove('hidden');
+            } else {
+                floatingBar.classList.add('hidden');
+            }
+            document.getElementById('floatingCartCount').textContent = totalSets;
+            document.getElementById('floatingCartTotal').textContent = `RM ${totalPrice.toFixed(2)}`;
+
+            // Screen 2 Cart List
+            const listEl = document.getElementById('cartItemsList');
+            if (state.cart.length === 0) {
+                listEl.innerHTML = `
+                    <div class="bg-white/80 border-2 border-dashed border-amber-500 rounded-2xl p-6 text-center">
+                        <div class="text-4xl mb-2">🐙</div>
+                        <div class="font-bubbly font-bold text-base text-[#2D080A]">Bakul Pesanan Masih Kosong</div>
+                        <p class="text-xs font-semibold text-stone-600 mt-1">Sila pilih set takoyaki kegemaran anda di Skrin Menu.</p>
+                    </div>
+                `;
+            } else {
+                listEl.innerHTML = state.cart.map((item, idx) => {
+                    const subtotal = item.unitPrice * item.qty;
+                    const badgeColor = item.flavor === 'Spicy' ? 'bg-[#D90416] text-white' : 'bg-[#2D080A] text-[#FFD000]';
+                    return `
+                        <div class="bg-white border-2 border-[#2D080A] rounded-2xl p-3 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                            <div class="flex items-start gap-2.5">
+                                <div class="w-12 h-12 rounded-xl bg-amber-100 border-2 border-[#D90416] flex flex-col items-center justify-center flex-shrink-0">
+                                    <span class="font-bubbly font-extrabold text-sm text-[#D90416] leading-none">${item.size}</span>
+                                    <span class="text-[9px] font-extrabold text-[#2D080A]">BIJI</span>
+                                </div>
+                                <div>
+                                    <div class="flex items-center gap-1.5 flex-wrap">
+                                        <span class="font-bubbly font-bold text-base text-[#2D080A]">Set ${item.size} Biji</span>
+                                        <span class="${badgeColor} text-[10px] font-extrabold px-2 py-0.5 rounded-full">
+                                            ${item.flavor.toUpperCase()} ${item.flavor === 'Spicy' ? '🌶️' : ''}
+                                        </span>
+                                    </div>
+                                    <div class="text-xs font-bold text-stone-600 mt-0.5">
+                                        Inti: <span class="text-[#2D080A]">${item.inti}</span> • RM ${item.unitPrice.toFixed(2)}/set
+                                    </div>
+                                    <button type="button" onclick="openEditModal(${idx})" class="mt-1 inline-flex items-center gap-1 text-[11px] font-extrabold text-[#D90416] hover:underline">
+                                        <i class="ph-bold ph-pencil-simple"></i> Edit Pilihan
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between sm:justify-end gap-3 border-t sm:border-t-0 pt-2 sm:pt-0 border-stone-200">
+                                <!-- Quantity Controls -->
+                                <div class="flex items-center bg-amber-100 border-2 border-[#2D080A] rounded-full p-0.5">
+                                    <button type="button" onclick="changeCartItemQty(${idx}, -1)" class="w-7 h-7 rounded-full bg-white hover:bg-red-100 text-[#2D080A] font-extrabold text-sm flex items-center justify-center">-</button>
+                                    <span class="px-2.5 font-bubbly font-bold text-sm text-[#2D080A]">${item.qty}</span>
+                                    <button type="button" onclick="changeCartItemQty(${idx}, 1)" class="w-7 h-7 rounded-full bg-[#D90416] text-white font-extrabold text-sm flex items-center justify-center">+</button>
+                                </div>
+
+                                <div class="text-right min-w-[70px]">
+                                    <div class="font-bubbly font-extrabold text-base text-[#D90416]">RM ${subtotal.toFixed(2)}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            document.getElementById('reviewTotalSets').textContent = `${totalSets} Set (${totalPcs} Biji)`;
+            document.getElementById('reviewTotalPrice').textContent = `RM ${totalPrice.toFixed(2)}`;
+            document.getElementById('paymentAmountDisplay').textContent = `RM ${totalPrice.toFixed(2)}`;
+        }
+
+        window.changeCartItemQty = function(index, delta) {
+            if (!state.cart[index]) return;
+            state.cart[index].qty += delta;
+            if (state.cart[index].qty <= 0) {
+                state.cart.splice(index, 1);
+                showToast('Item dikeluarkan dari bakul', 'info');
+            }
+            updateCartViews();
+        };
+
+        // EDIT MODAL LOGIC
+        window.openEditModal = function(index) {
+            const item = state.cart[index];
+            if (!item) return;
+            state.editingCartIndex = index;
+            state.editFlavor = item.flavor;
+            state.editSize = item.size;
+            state.editInti = item.inti;
+
+            refreshEditModalUI();
+            const modal = document.getElementById('editItemModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        };
+
+        window.closeEditModal = function() {
+            const modal = document.getElementById('editItemModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            state.editingCartIndex = null;
+        };
+
+        window.setEditFlavor = function(flavor) {
+            state.editFlavor = flavor;
+            refreshEditModalUI();
+        };
+
+        window.setEditSize = function(size) {
+            state.editSize = size;
+            refreshEditModalUI();
+        };
+
+        window.setEditInti = function(inti) {
+            state.editInti = inti;
+            refreshEditModalUI();
+        };
+
+        function refreshEditModalUI() {
+            document.getElementById('editFlavor_Original').classList.toggle('selected', state.editFlavor === 'Original');
+            document.getElementById('editFlavor_Spicy').classList.toggle('selected', state.editFlavor === 'Spicy');
+
+            [5, 10, 25].forEach(sz => {
+                document.getElementById(`editSize_${sz}`).classList.toggle('selected', state.editSize === sz);
+            });
+
+            document.querySelectorAll('.edit-inti-btn').forEach(btn => {
+                btn.classList.toggle('selected', btn.getAttribute('data-inti') === state.editInti);
+            });
+
+            const newUnitPrice = PRICE_TABLE[state.editFlavor][state.editSize];
+            document.getElementById('editModalPricePreview').textContent = `RM ${newUnitPrice.toFixed(2)}`;
+        }
+
+        window.saveEditedItem = function() {
+            if (state.editingCartIndex === null || !state.cart[state.editingCartIndex]) return;
+            const item = state.cart[state.editingCartIndex];
+            item.flavor = state.editFlavor;
+            item.size = state.editSize;
+            item.inti = state.editInti;
+            item.unitPrice = PRICE_TABLE[state.editFlavor][state.editSize];
+
+            closeEditModal();
+            updateCartViews();
+            showToast('Pilihan pesanan berjaya dikemas kini!');
+        };
+
+        window.proceedToPayment = function() {
+            if (state.cart.length === 0) {
+                showToast('Sila tambah sekurang-kurangnya 1 set Takoyaki dahulu!', 'error');
+                goToScreen(1);
+                return;
+            }
+            goToScreen(3);
+        };
+
+        // =========================================================
+        // SCREEN 3: PAYMENT & REALTIME DATABASE QUEUE INSERTION
+        // =========================================================
+        window.selectPaymentMethod = function(method) {
+            state.paymentMethod = method;
+            document.getElementById('payTab_QR').classList.toggle('selected', method === 'DUITNOW_QR');
+            document.getElementById('payTab_FPX').classList.toggle('selected', method === 'FPX_BANKING');
+            document.getElementById('paymentPanel_QR').classList.toggle('hidden', method !== 'DUITNOW_QR');
+            document.getElementById('paymentPanel_FPX').classList.toggle('hidden', method !== 'FPX_BANKING');
+        };
+
+        window.selectFpxBank = function(bankName) {
+            state.selectedBank = bankName;
+            document.querySelectorAll('.fpx-bank-btn').forEach(btn => {
+                btn.classList.toggle('selected', btn.textContent.trim().includes(bankName.split(' ')[0]));
+            });
+        };
+
+        // CRITICAL REQUIREMENT: Only orders that succeed payment enter the queue in Firebase Realtime DB
+        window.verifyAndSubmitOrder = async function(isPaymentSuccess) {
+            if (state.cart.length === 0) {
+                showToast('Tiada item dalam bakul!', 'error');
+                return;
+            }
+
+            const verifyBtn = document.getElementById('verifyPayBtn');
+            const verifyBtnText = document.getElementById('verifyPayBtnText');
+            const verifyBox = document.getElementById('paymentVerificationBox');
+            const waitingBanner = document.getElementById('waitingMerchantVerifyBanner');
+
+            verifyBtn.disabled = true;
+            verifyBtnText.textContent = 'Menghantar Notis Ke Merchant...';
+
+            if (!isPaymentSuccess) {
+                await new Promise(r => setTimeout(r, 600));
+                verifyBtn.disabled = false;
+                verifyBtnText.textContent = 'Saya Dah Bayar • Hantar Pengesahan';
+                verifyBox.className = 'mt-4 bg-red-100 border-2 border-[#D90416] rounded-2xl p-3.5';
+                verifyBox.innerHTML = `
+                    <div class="flex items-start gap-2.5">
+                        <i class="ph-fill ph-x-circle text-[#D90416] text-xl flex-shrink-0 mt-0.5"></i>
+                        <div class="text-xs font-bold text-red-900">
+                            <strong>Pembayaran Tidak Berjaya / Dibatalkan!</strong>
+                            Pesanan anda <u>TIDAK</u> dimasukkan ke dalam giliran dapur. Sila cuba bayar semula untuk mendapatkan nombor giliran.
+                        </div>
+                    </div>
+                `;
+                showToast('Pembayaran gagal! Pesanan tidak masuk ke queue.', 'error');
+                return;
+            }
+
+            // Flow Step 1: Send order notification & payment verification request to Merchant via Firebase RTDB
+            try {
+                const { totalSets, totalPcs, totalPrice } = getCartTotals();
+                const customerName = document.getElementById('customerNameInput').value.trim() || 'Pelanggan Walk-In';
+                const notes = document.getElementById('orderNotesInput').value.trim() || '-';
+
+                const ordersList = Object.values(state.allRecentOrders || {});
+                const activeAhead = ordersList.filter(o => o && (o.status === 'QUEUED' || o.status === 'ACCEPTED' || o.status === 'PREPARING')).length;
+                const estMinutes = Math.max(5, (activeAhead * 4) + (totalSets * 3));
+
+                const newOrderRef = push(ref(rtdb, 'orders'));
+                const orderId = newOrderRef.key;
+
+                const orderPayload = {
+                    orderId: orderId,
+                    queueNumber: 'MENUNGGU',
+                    customerName: customerName,
+                    notes: notes,
+                    items: state.cart.map(i => ({
+                        size: i.size,
+                        flavor: i.flavor,
+                        inti: i.inti,
+                        qty: i.qty,
+                        unitPrice: i.unitPrice,
+                        subtotal: i.unitPrice * i.qty
+                    })),
+                    totalSets: totalSets,
+                    totalPcs: totalPcs,
+                    totalPrice: totalPrice,
+                    paymentMethod: state.paymentMethod === 'DUITNOW_QR' ? 'DuitNow QR' : `FPX (${state.selectedBank})`,
+                    paymentVerified: false,
+                    paymentStatus: 'PENDING_VERIFICATION',
+                    status: 'WAITING_VERIFICATION',
+                    estimatedMinutes: estMinutes,
+                    createdAt: Date.now()
+                };
+
+                await set(newOrderRef, orderPayload);
+
+                // Clear cart and subscribe to real-time updates from Merchant Dashboard
+                state.activeOrderId = orderId;
+                state.activeOrderData = orderPayload;
+                state.notifiedReadyForOrderId = null;
+                state.cart = [];
+                updateCartViews();
+
+                waitingBanner.classList.remove('hidden');
+                verifyBtnText.textContent = 'Menunggu Pengesahan Merchant...';
+
+                subscribeToActiveOrder(orderId);
+                playSoundEffect('add');
+                showToast('Permohonan pengesahan bayaran dihantar ke Merchant!', 'info');
+
+            } catch (err) {
+                console.error("Ralat menyimpan ke Firebase RTDB:", err);
+                verifyBtn.disabled = false;
+                verifyBtnText.textContent = 'Saya Dah Bayar • Hantar Pengesahan';
+                showToast('Ralat sambungan pangkalan data. Sila cuba lagi.', 'error');
+            }
+        };
+
+        // =========================================================
+        // SCREEN 4 & 5: REALTIME QUEUE TRACKING & PICKUP
+        // =========================================================
+        function subscribeToActiveOrder(orderId) {
+            const orderRef = ref(rtdb, `orders/${orderId}`);
+            onValue(orderRef, (snapshot) => {
+                const data = snapshot.val();
+                if (!data) return;
+                state.activeOrderData = data;
+
+                const verifyBtn = document.getElementById('verifyPayBtn');
+                const verifyBtnText = document.getElementById('verifyPayBtnText');
+                const waitingBanner = document.getElementById('waitingMerchantVerifyBanner');
+
+                // Handle if merchant rejected payment
+                if (data.status === 'PAYMENT_REJECTED') {
+                    waitingBanner.classList.add('hidden');
+                    verifyBtn.disabled = false;
+                    verifyBtnText.textContent = 'Saya Dah Bayar • Hantar Pengesahan';
+                    showToast('Bayaran belum diterima oleh Merchant. Sila semak semula.', 'error');
+                    return;
+                }
+
+                // Flow Step 2 & 3: Once Merchant verifies payment, customer enters Screen 4 and gets Queue Number
+                if (data.paymentVerified && data.status !== 'WAITING_VERIFICATION') {
+                    waitingBanner.classList.add('hidden');
+                    verifyBtn.disabled = false;
+                    verifyBtnText.textContent = 'Saya Dah Bayar • Hantar Pengesahan';
+
+                    if (state.currentScreen === 3) {
+                        playSoundEffect('add');
+                        showToast(`Bayaran Disahkan! Nombor Giliran Anda: ${data.queueNumber}`);
+                        goToScreen(4);
+                    }
+                }
+
+                renderTrackingAndPickupScreens(data);
+
+                // Flow Step 4: Automatically transition to Screen 5 (Ready for Pickup) when merchant clicks Mark as Ready
+                if (data.status === 'READY' && state.notifiedReadyForOrderId !== data.orderId) {
+                    state.notifiedReadyForOrderId = data.orderId;
+                    playSoundEffect('ready');
+                    showToast(`🔔 Pesanan ${data.queueNumber} telah SIAP! Sila ambil di kaunter.`);
+                    goToScreen(5);
+                }
+            });
+        }
+
+        function renderTrackingAndPickupScreens(order) {
+            if (!order) return;
+
+            // Screen 4 Elements
+            document.getElementById('queueNumberDisplay').textContent = order.queueNumber || '#101';
+            document.getElementById('queueCustomerName').textContent = `Pelanggan: ${order.customerName || 'Tetamu'}`;
+            document.getElementById('trackingOrderIdLabel').textContent = `${order.paymentMethod} • LUNAS`;
+
+            const cardQueued = document.getElementById('statusCard_QUEUED');
+            const cardPreparing = document.getElementById('statusCard_PREPARING');
+            const cardReady = document.getElementById('statusCard_READY');
+
+            if (order.status === 'QUEUED') {
+                const est = order.estimatedMinutes || 8;
+                document.getElementById('estimatedWaitDisplay').textContent = `~ ${est} - ${est + 3} Minit`;
+                document.getElementById('ordersAheadText').textContent = 'Bayaran disahkan! Menunggu dapur terima pesanan (Accept)...';
+
+                cardQueued.className = 'flex items-center gap-3 p-3 rounded-2xl border-2 border-amber-500 bg-amber-100 shadow-md';
+                cardPreparing.className = 'flex items-center gap-3 p-3 rounded-2xl border-2 border-stone-300 bg-stone-100 opacity-60';
+                cardReady.className = 'flex items-center gap-3 p-3 rounded-2xl border-2 border-stone-300 bg-stone-100 opacity-60';
+            } else if (order.status === 'ACCEPTED' || order.status === 'PREPARING') {
+                const est = order.estimatedMinutes || 8;
+                document.getElementById('estimatedWaitDisplay').textContent = `~ ${est} - ${est + 2} Minit`;
+                document.getElementById('ordersAheadText').textContent = order.status === 'ACCEPTED'
+                    ? 'Pesanan telah diterima (Accepted) oleh krew dapur!'
+                    : 'Sedang dimasak segar panas-panas di kuali takoyaki!';
+
+                cardQueued.className = 'flex items-center gap-3 p-3 rounded-2xl border-2 border-emerald-600 bg-emerald-50';
+                cardPreparing.className = 'flex items-center gap-3 p-3 rounded-2xl border-2 border-[#D90416] bg-amber-100 shadow-md';
+                cardPreparing.innerHTML = `
+                    <div class="w-10 h-10 rounded-full bg-[#D90416] text-white flex items-center justify-center text-xl flex-shrink-0 animate-bounce">
+                        <i class="ph-fill ph-fire"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="font-bubbly font-bold text-sm text-[#D90416]">
+                            ${order.status === 'ACCEPTED' ? '2. Diterima Dapur (Accepted) 👍' : '2. Sedang Disediakan (Preparing) 🔥'}
+                        </div>
+                        <div class="text-xs font-semibold text-stone-700">Krew kami sedang menyediakan takoyaki anda panas-panas!</div>
+                    </div>
+                    <span class="text-[10px] font-extrabold bg-[#2D080A] text-[#FFD000] px-2 py-0.5 rounded-full">SEMASA</span>
+                `;
+                cardReady.className = 'flex items-center gap-3 p-3 rounded-2xl border-2 border-stone-300 bg-stone-100 opacity-60';
+            } else if (order.status === 'READY' || order.status === 'COMPLETED') {
+                document.getElementById('estimatedWaitDisplay').textContent = 'SIAP SEDIA DIAMBIL!';
+                document.getElementById('ordersAheadText').textContent = 'Sila terus ke kaunter pickup sekarang.';
+
+                cardPreparing.className = 'flex items-center gap-3 p-3 rounded-2xl border-2 border-emerald-600 bg-emerald-50';
+                cardPreparing.innerHTML = `
+                    <div class="w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xl flex-shrink-0">
+                        <i class="ph-bold ph-check"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="font-bubbly font-bold text-sm text-[#2D080A]">2. Selesai Dimasak</div>
+                        <div class="text-xs font-semibold text-stone-600">Takoyaki anda telah siap dibungkus</div>
+                    </div>
+                `;
+
+                cardReady.className = 'flex items-center gap-3 p-3 rounded-2xl border-3 border-emerald-600 bg-emerald-100 shadow-md';
+                cardReady.innerHTML = `
+                    <div class="w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xl flex-shrink-0 animate-bounce">
+                        <i class="ph-fill ph-bell-ringing"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="font-bubbly font-bold text-sm text-emerald-900">3. Siap Untuk Diambil! ✅</div>
+                        <div class="text-xs font-bold text-emerald-800">Klik ke Skrin 5 untuk tunjuk nombor giliran</div>
+                    </div>
+                    <button onclick="goToScreen(5)" class="bg-emerald-700 text-white text-[10px] font-extrabold px-2.5 py-1 rounded-full">KE SKRIN 5</button>
+                `;
+            } else {
+                const est = order.estimatedMinutes || 8;
+                document.getElementById('estimatedWaitDisplay').textContent = `~ ${est} - ${est + 3} Minit`;
+                document.getElementById('ordersAheadText').textContent = 'Dimasak segar panas-panas di kuali takoyaki!';
+            }
+
+            // Items list on Screen 4 & Screen 5
+            const itemsHtml = (order.items || []).map(it => `
+                <div class="flex justify-between items-center border-b border-amber-200/70 py-1">
+                    <span>${it.qty}x Set ${it.size} Biji (${it.flavor} • ${it.inti})</span>
+                    <span class="text-[#D90416]">RM ${(it.subtotal || 0).toFixed(2)}</span>
+                </div>
+            `).join('') + `
+                <div class="flex justify-between items-center pt-1 text-sm font-extrabold text-[#2D080A]">
+                    <span>Jumlah Dibayar (${order.paymentMethod}):</span>
+                    <span>RM ${(order.totalPrice || 0).toFixed(2)}</span>
+                </div>
+            `;
+
+            document.getElementById('trackingOrderItems').innerHTML = itemsHtml;
+
+            // Screen 5 Elements
+            document.getElementById('pickupQueueNumber').textContent = order.queueNumber || '#101';
+            document.getElementById('pickupCustomerName').textContent = `Pelanggan: ${order.customerName || 'Tetamu'}`;
+            document.getElementById('pickupItemsSummary').innerHTML = itemsHtml;
+        }
+
+        // Simulate Kitchen Staff marking active order as READY in Firebase RTDB
+        window.simulateKitchenMarkReady = async function() {
+            if (!state.activeOrderId) {
+                showToast('Tiada pesanan aktif!', 'error');
+                return;
+            }
+            try {
+                await update(ref(rtdb, `orders/${state.activeOrderId}`), {
+                    status: 'READY',
+                    readyAt: Date.now()
+                });
+            } catch (e) {
+                console.error(e);
+                showToast('Gagal mengemas kini status di Firebase', 'error');
+            }
+        };
+
+        window.completePickupAndReset = async function() {
+            if (state.activeOrderId) {
+                try {
+                    await update(ref(rtdb, `orders/${state.activeOrderId}`), {
+                        status: 'COMPLETED',
+                        completedAt: Date.now()
+                    });
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+            state.activeOrderId = null;
+            state.activeOrderData = null;
+            document.getElementById('customerNameInput').value = '';
+            document.getElementById('orderNotesInput').value = '';
+            showToast('Terima kasih! Selamat menjamu selera Moshi Moshi Takoyaki 🐙');
+            goToScreen(1);
+        };
+
+        // =========================================================
+        // NAVIGATION BETWEEN THE 5 SCREENS
+        // =========================================================
+        window.goToScreen = function(screenNum) {
+            state.currentScreen = screenNum;
+            for (let i = 1; i <= 5; i++) {
+                const sec = document.getElementById(`screen${i}`);
+                if (sec) sec.classList.toggle('hidden', i !== screenNum);
+
+                const btn = document.getElementById(`stepBtn${i}`);
+                if (btn) {
+                    if (i === screenNum) {
+                        btn.className = 'step-indicator flex flex-col items-center py-1.5 px-1 rounded-xl bg-[#D90416] text-white border border-[#FFD000] shadow transition';
+                    } else if (i < screenNum) {
+                        btn.className = 'step-indicator flex flex-col items-center py-1.5 px-1 rounded-xl bg-emerald-800/70 text-emerald-100 transition';
+                    } else {
+                        btn.className = 'step-indicator flex flex-col items-center py-1.5 px-1 rounded-xl text-amber-200/60 hover:text-white transition';
+                    }
+                }
+            }
+            updateCartViews();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.tryNavigateStep = function(targetStep) {
+            if (targetStep === 1) {
+                goToScreen(1);
+            } else if (targetStep === 2) {
+                goToScreen(2);
+            } else if (targetStep === 3) {
+                if (state.cart.length === 0) {
+                    showToast('Sila pilih menu ke dalam bakul dahulu!', 'info');
+                    goToScreen(1);
+                    return;
+                }
+                goToScreen(3);
+            } else if (targetStep === 4 || targetStep === 5) {
+                if (!state.activeOrderData) {
+                    showToast('Hanya pesanan yang selesai dibayar mempunyai nombor giliran!', 'error');
+                    return;
+                }
+                goToScreen(targetStep);
+            }
+        };
+
+        // =========================================================
+        // KITCHEN PANEL (LIVE FIREBASE RTDB QUEUE CONTROLLER)
+        // =========================================================
+        window.toggleKitchenSimulator = function() {
+            const modal = document.getElementById('kitchenSimulatorModal');
+            const isHidden = modal.classList.contains('hidden');
+            modal.classList.toggle('hidden', !isHidden);
+            modal.classList.toggle('flex', isHidden);
+        };
+
+        window.updateOrderStatusFromKitchen = async function(orderId, newStatus) {
+            try {
+                await update(ref(rtdb, `orders/${orderId}`), {
+                    status: newStatus,
+                    updatedAt: Date.now()
+                });
+                showToast(`Status pesanan dikemas kini ke ${newStatus}`);
+            } catch (e) {
+                showToast('Gagal kemas kini status', 'error');
+            }
+        };
+
+        function initRealtimeDatabaseListeners() {
+            const ordersRef = ref(rtdb, 'orders');
+            onValue(ordersRef, (snapshot) => {
+                // Connection status badge
+                const dot = document.getElementById('dbStatusDot');
+                const txt = document.getElementById('dbStatusText');
+                dot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-400';
+                txt.textContent = 'Firebase RTDB Aktif (moshitako001)';
+
+                const val = snapshot.val() || {};
+                state.allRecentOrders = val;
+
+                // Render Kitchen Drawer List
+                const kitchenListEl = document.getElementById('kitchenOrdersList');
+                const ordersArray = Object.values(val).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)).slice(0, 15);
+
+                if (ordersArray.length === 0) {
+                    kitchenListEl.innerHTML = `<div class="text-center py-6 text-amber-200/60">Tiada pesanan dalam pangkalan data buat masa ini.</div>`;
+                    return;
+                }
+
+                kitchenListEl.innerHTML = ordersArray.map(ord => {
+                    const statusBadge = ord.status === 'READY' 
+                        ? 'bg-emerald-600 text-white' 
+                        : ord.status === 'COMPLETED'
+                        ? 'bg-stone-600 text-stone-200'
+                        : 'bg-amber-400 text-[#2D080A]';
+
+                    const itemsSummary = (ord.items || []).map(i => `${i.qty}x Set ${i.size} (${i.flavor} - ${i.inti})`).join(', ');
+
+                    return `
+                        <div class="bg-[#2D080A] border border-amber-500/40 rounded-xl p-3 flex flex-col gap-2">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="font-bubbly font-extrabold text-base text-[#FFD000]">${ord.queueNumber || '#-'}</span>
+                                    <span class="font-bold text-white">${ord.customerName || 'Tetamu'}</span>
+                                </div>
+                                <span class="${statusBadge} text-[10px] font-extrabold px-2 py-0.5 rounded-full">${ord.status}</span>
+                            </div>
+                            <div class="text-[11px] text-amber-100/90">${itemsSummary}</div>
+                            <div class="flex items-center justify-between pt-1 border-t border-white/10">
+                                <span class="text-[11px] text-[#FFD000] font-bold">RM ${(ord.totalPrice || 0).toFixed(2)} • ${ord.paymentMethod || 'QR'}</span>
+                                <div class="flex gap-1.5">
+                                    <button onclick="updateOrderStatusFromKitchen('${ord.orderId}', 'PREPARING')" class="bg-amber-600 hover:bg-amber-500 text-white px-2.5 py-1 rounded-lg font-bold text-[10px]">Masak 🔥</button>
+                                    <button onclick="updateOrderStatusFromKitchen('${ord.orderId}', 'READY')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-2.5 py-1 rounded-lg font-bold text-[10px]">Siap ✅</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }, (error) => {
+                console.warn("Firebase RTDB Listener Warning:", error);
+                const dot = document.getElementById('dbStatusDot');
+                const txt = document.getElementById('dbStatusText');
+                dot.className = 'w-2.5 h-2.5 rounded-full bg-red-500';
+                txt.textContent = 'Mod Luar Talian / Semak Rules RTDB';
+            });
+        }
+
+        // Initialize on Window Load
+        window.addEventListener('DOMContentLoaded', () => {
+            updateCurrentSelectionUI();
+            goToScreen(1);
+            initRealtimeDatabaseListeners();
+        });
+    </script>
+</body>
+</html>
